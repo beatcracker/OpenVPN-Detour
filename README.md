@@ -36,7 +36,7 @@ This solution is tested with Asus WL500W router: it takes about 1 hour to push a
 
   ```
   if replace ; then
-    # Uncomment line below, to restart OpeVNP if new routes found
+    # Uncomment line below, to restart OpenVNP if new routes found
     # restart_ovpn
   fi
   ```

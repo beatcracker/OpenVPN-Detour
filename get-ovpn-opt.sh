@@ -49,7 +49,7 @@ if cmp -s "$SCRIPT_DIR/$OPTIONS_CFG" "$TMP/$TMP_OPTIONS_CFG" >/dev/null ; then
   true # nothing todo
 else
   if replace ; then
-	# Uncomment line below, to restart OpeVNP if new routes found
+	# Uncomment line below, to restart OpenVNP if new routes found
     # restart_ovpn
   fi
 fi
