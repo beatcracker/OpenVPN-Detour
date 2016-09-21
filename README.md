@@ -32,7 +32,7 @@ This solution is tested with Asus WL500W router: it takes about 1 hour to push a
 4. Run `get-ovpn-opt.sh` once. It should dump all pushed options (including routes) to `options.conf`
 5. Now, the next time you start OpenVPN client, it will use `routes.sh` to push routes from `options.conf`
 6. Optionally, add `get-ovpn-opt.sh` to your cron, to update routes periodically
-7. If you whant to reconnect OpenVPN if new routes are found, uncomment one line in `get-ovpn-opt.sh`:
+7. If you want to reconnect OpenVPN if new routes are found, uncomment one line in `get-ovpn-opt.sh`:
 
   ```
   if replace ; then

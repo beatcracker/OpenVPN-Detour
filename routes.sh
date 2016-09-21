@@ -33,7 +33,7 @@ case "$script_type" in
     ;;
   'down')
     set_iptables "D"
-	# Not needed, OpenVPN seems to clear routes itself
+    # Not needed, OpenVPN seems to clear routes itself
     #set_routes "del"
     ;;
   'route-up')
