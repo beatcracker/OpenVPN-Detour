@@ -2,6 +2,7 @@
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 OPTIONS_CFG="options.conf"
+RESOLV_CFG="/tmp/resolv.conf"
 
 set_iptables() {
   iptables -"$1" FORWARD -i br0 -o "$dev" -j ACCEPT
@@ -27,11 +28,35 @@ set_routes() {
   killall ping
 }
 
+hup_dnsmasq() {
+  killall -l -HUP dnsmasq
+}
+
+set_dns() {
+  if mv -n "$RESOLV_CFG" "$RESOLV_CFG.bak" > /dev/null
+  then
+    echo $foreign_option_1 \
+    | sed -e 's/dhcp-option DNS/nameserver/g' \
+    > "$RESOLV_CFG"
+
+    hup_dnsmasq
+  fi
+}
+
+restore_dns() {
+  if mv -f "$RESOLV_CFG.bak" "$RESOLV_CFG" > /dev/null
+  then
+    hup_dnsmasq
+  fi
+}
+
 case "$script_type" in
   'up')
+    set_dns
     set_iptables "I"
     ;;
   'down')
+    restore_dns
     set_iptables "D"
     # Not needed, OpenVPN seems to clear routes itself
     #set_routes "del"
