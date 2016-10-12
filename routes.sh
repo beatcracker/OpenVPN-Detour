@@ -35,7 +35,8 @@ hup_dnsmasq() {
 set_dns() {
   if mv -n "$RESOLV_CFG" "$RESOLV_CFG.bak" > /dev/null
   then
-    echo $foreign_option_1 \
+    set | grep -E 'foreign_option_[[:digit:]]+=' \
+    | cut -f 2 -d'=' | tr -d "'" \
     | sed -e 's/dhcp-option DNS/nameserver/g' \
     > "$RESOLV_CFG"
 
