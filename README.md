@@ -7,44 +7,39 @@ Linux ifconfig failed: could not execute external program
 Exiting due to fatal error
 ```
 
-Happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/). It pushes about 25000 routes.
+This happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/). It pushes about 25000 routes.
 
 
 # How-to
 
-This solution is tested with Asus WL500W router: it takes about 1 hour to push all the routes, but afterwards it works fine.
+This solution is tested with Asus WL500W router: it takes about ~30 minutes to push all the routes, but afterwards it works fine.
 
-1. Copy scripts to your OpenVPN config directory
-2. Change your OpenVPN config name in `get-ovpn-opt.sh`:
-	* `OPENVPN_CFG="your-config-name.conf"`
-3. Edit your OpenVPN config to include this:
+1. Copy scripts to your router
+2. Edit `detour.sh`:
+2. Set path to your OpenVPN config:
+	* `OPENVPN_CFG='/opt/etc/openvpn/openvpn.conf'`
+3. Set path to your `resolv.conf`:
+	* `RESOLV_CFG='/tmp/resolv.conf'`
+3. Set path to your TEMP directory:
+	* `TEMP_DIR='/tmp'`
+4. Edit your OpenVPN config to include this lines:
 
   ```
   #### OpenVPN-Detour ####
   script-security 3
   route-nopull
-  up routes.sh
-  down routes.sh
-  route-up routes.sh
-  #######################
+  up detour.sh
+  route-up detour.sh
+  down detour.sh
+  ########################
 ```
-
-4. Run `get-ovpn-opt.sh` once. It should dump all pushed options (including routes) to `options.conf`
-5. Now, the next time you start OpenVPN client, it will use `routes.sh` to push routes from `options.conf`
-6. Optionally, add `get-ovpn-opt.sh` to your cron, to update routes periodically
-7. If you want to reconnect OpenVPN if new routes are found, uncomment one line in `get-ovpn-opt.sh`:
-
-  ```
-  if replace ; then
-    # Uncomment line below, to restart OpenVPN if new routes found
-    # restart_ovpn
-  fi
-  ```
 
 # Notes
-`routes.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. To disable this, remove/comment this lines from your OpenVPN config:
+`detour.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. To disable this, comment this line on `detour.sh`:
 
 ```
-up routes.sh
-down routes.sh
+  'route-up')
+    #set_iptables "I"
+    set_routes "add"
+    set_dns
 ```
