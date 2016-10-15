@@ -5,7 +5,7 @@
 #########################################################
 
 # Path to OpenVPN config
-OPENVPN_CFG='/opt/home/.openvpn/antizapret.conf'
+OPENVPN_CFG='/opt/etc/openvpn/openvpn.conf'
 
 # Path to resolv.conf, used to apply
 # DNS servers pushed by OpenVPN
