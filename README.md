@@ -9,19 +9,25 @@ Exiting due to fatal error
 
 This happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/). It pushes about 25000 routes.
 
+# Details
 
-# How-to
+For every pushed route, OpenVPN [creates environment variable](https://community.openvpn.net/openvpn/wiki/Openvpn23ManPage#lbAU) `route_{parm}_{n}`, that is set prior to `--up` script execution. If the amount of routes is high, OpenVPN hits the maximum stack size limit for the process ([RLIMIT_STACK](http://www.delorie.com/gnu/docs/glibc/libc_448.html)) which [makes it segfault](https://twitter.com/ValdikSS/status/778695590997741568). This can be mitigated by setting higher limit in the [limits.conf](https://linux.die.net/man/5/limits.conf) or by running `ulimit -s 16000`. Unfortunately, none of the solutions above worked for me, since my options are pretty limited: I'm running an OpenVPN client on a router made in the past decade.
 
-This solution is tested with Asus WL500W router: it takes about ~30 minutes to push all the routes, but afterwards it works fine.
+To workaround this issue, one has to disable pushed routes using `route-nopull` in the config file and then apply the routes by some other means. So OpenVPN-Detour was born.
 
-1. Copy scripts to your router
-2. Edit `detour.sh`:
-2. Set path to your OpenVPN config:
-	* `OPENVPN_CFG='/opt/etc/openvpn/openvpn.conf'`
-3. Set path to your `resolv.conf`:
-	* `RESOLV_CFG='/tmp/resolv.conf'`
-3. Set path to your TEMP directory:
-	* `TEMP_DIR='/tmp'`
+When OpenVPN client executes `detour.sh` script, second, dummy OpenVPN connection is initiated. The script then grabs pushed configuration from the OpenVPN's debug output, extracts routes and DNS options using core Linux tools like awk/sed/grep and applies them.
+
+# Usage
+
+This solution is tested with Asus WL-500W router. It takes about ~30 minutes to push all the routes this way.
+
+1. Copy script to your router
+2. Make it executable:
+	* `chmod +x /path/to/detour.sh`
+3. Edit `detour.sh` and:
+	* set path to your OpenVPN config: `OPENVPN_CFG='/opt/etc/openvpn/openvpn.conf'`
+	* set path to your `resolv.conf`: `RESOLV_CFG='/tmp/resolv.conf'`
+	* set path to your TEMP directory: `TEMP_DIR='/tmp'`
 4. Edit your OpenVPN config to include this lines:
 
   ```
