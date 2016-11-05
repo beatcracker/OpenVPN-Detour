@@ -21,13 +21,13 @@ When OpenVPN client executes `detour.sh` script, second, dummy OpenVPN connectio
 
 This solution is tested with Asus WL-500W router. It takes about ~30 minutes to push all the routes this way.
 
-1. Copy script to your router
+1. Copy script to your OpenVPN config directory
 2. Make it executable:
 	* `chmod +x /path/to/detour.sh`
 3. Edit `detour.sh` and:
-	* set path to your OpenVPN config: `OPENVPN_CFG='/opt/etc/openvpn/openvpn.conf'`
 	* set path to your `resolv.conf`: `RESOLV_CFG='/tmp/resolv.conf'`
 	* set path to your TEMP directory: `TEMP_DIR='/tmp'`
+	* configure syslog support: `USE_SYSLOG='1'`
 4. Edit your OpenVPN config to include this lines:
 
   ```

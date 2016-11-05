@@ -4,9 +4,6 @@
 #                    CONFIGURATION                      #
 #########################################################
 
-# Path to OpenVPN config
-OPENVPN_CFG='/opt/etc/openvpn/openvpn.conf'
-
 # Path to resolv.conf, used to apply
 # DNS servers pushed by OpenVPN
 RESOLV_CFG='/tmp/resolv.conf'
@@ -14,12 +11,21 @@ RESOLV_CFG='/tmp/resolv.conf'
 # Temp directory path
 TEMP_DIR='/tmp'
 
+# Output to system log
+USE_SYSLOG='1'
+
 #########################################################
 #              DO NOT EDIT BELOW THIS LINE              #
 #########################################################
 
 OPTIONS_CFG='detour.conf'
 TEMP_RESOLV_CFG='resolv.conf.detour'
+OPENVPN_CFG="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/$config"
+
+if [ "$USE_SYSLOG" -eq "1" ]
+then
+  alias echo='logger -s -t OpenVPN-Detour'
+fi
 
 set_iptables() {
   echo "Configuring iptables. Command: '$1'"
