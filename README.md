@@ -27,7 +27,7 @@ This solution is tested with Asus WL-500W router. It takes about ~30 minutes to 
 3. Edit `detour.sh` and:
 	* set path to your `resolv.conf`: `RESOLV_CFG='/tmp/resolv.conf'`
 	* set path to your TEMP directory: `TEMP_DIR='/tmp'`
-	* configure syslog support: `USE_SYSLOG='1'`
+	* configure [syslog support](#syslog-support): `USE_SYSLOG='1'`
 	* configure [iptables rules](#iptables-rules)</sup>: `ADD_IPTABLES_RULES='1'`
 	* configure [DNS servers](#dns-servers): `SET_DNS_SERVERS='1'`
 4. Edit your OpenVPN config to include this lines:
@@ -44,8 +44,11 @@ This solution is tested with Asus WL-500W router. It takes about ~30 minutes to 
 
 # Notes
 
+## Syslog support
+If set to `1`, the script will additionaly output log to `syslog`. For routers, this means that script execution process will be shown in your router's log in web UI.
+
 ## Iptables rules
-`detour.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to `0`, to disables this.
+Useful for routers: add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to `0`, to disables this.
 
 ## DNS servers
 Set variable to `0`, to ingore pushed DNS servers.
