@@ -45,7 +45,7 @@ This solution is tested with Asus WL-500W router. It takes about ~30 minutes to 
 # Notes
 
 ## Iptables rules
-`detour.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to '0', to disables this.
+`detour.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to `0`, to disables this.
 
 ## DNS servers
-Set variable to '0', to ingore pushed DNS servers.
+Set variable to `0`, to ingore pushed DNS servers.
