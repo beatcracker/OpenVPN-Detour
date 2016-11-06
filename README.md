@@ -48,7 +48,7 @@ This solution is tested with Asus WL-500W router. It takes about ~30 minutes to 
 If set to `1`, the script will additionaly output log to `syslog`. For routers, this means that script execution process will be shown in your router's log in web UI.
 
 ## Iptables rules
-Useful for routers: add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to `0`, to disables this.
+Useful for routers: add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to `0`, to disable this.
 
 ## DNS servers
 Set variable to `0`, to ingore pushed DNS servers.
