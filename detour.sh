@@ -11,8 +11,14 @@ RESOLV_CFG='/tmp/resolv.conf'
 # Temp directory path
 TEMP_DIR='/tmp'
 
-# Output to system log
+# Output to system log?
 USE_SYSLOG='1'
+
+# Add iptables rules?
+ADD_IPTABLES_RULES='1'
+
+# Apply pushed DNS servers?
+SET_DNS_SERVERS='1'
 
 #########################################################
 #              DO NOT EDIT BELOW THIS LINE              #
@@ -22,10 +28,12 @@ OPTIONS_CFG='detour.conf'
 TEMP_RESOLV_CFG='resolv.conf.detour'
 OPENVPN_CFG="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/$config"
 
-if [ "$USE_SYSLOG" -eq "1" ]
+if [ "$USE_SYSLOG" -eq '1' ]
 then
   alias echo='logger -s -t OpenVPN-Detour'
 fi
+
+#########################################################
 
 set_iptables() {
   echo "Configuring iptables. Command: '$1'"
@@ -72,22 +80,24 @@ hup_dnsmasq() {
 set_dns() {
   echo 'Starting DNS setup'
   echo 'Current DNS servers:'
-  cat $RESOLV_CFG
+  echo "$(cat $RESOLV_CFG)"
+
+  grep -v -F 'nameserver' "$RESOLV_CFG" > "$TEMP_DIR/$TEMP_RESOLV_CFG"
 
   if [ -z "$foreign_option_1" ]
   then
     echo "Getting new DNS servers from: $TEMP_DIR/$OPTIONS_CFG"
 
-    grep -E 'dhcp-option DNS' "$TEMP_DIR/$OPTIONS_CFG" \
+    grep -F 'dhcp-option DNS' "$TEMP_DIR/$OPTIONS_CFG" \
     | sed -e 's/dhcp-option DNS/nameserver/g' \
-    > "$TEMP_DIR/$TEMP_RESOLV_CFG"
+    >> "$TEMP_DIR/$TEMP_RESOLV_CFG"
   else
     echo 'Getting new DNS servers from env. variables'
 
     set | grep -E 'foreign_option_[[:digit:]]+=' \
     | cut -f 2 -d'=' | tr -d "'" \
     | sed -e 's/dhcp-option DNS/nameserver/g' \
-    > "$TEMP_DIR/$TEMP_RESOLV_CFG"
+    >> "$TEMP_DIR/$TEMP_RESOLV_CFG"
   fi
 
   if [ -s "$TEMP_DIR/$TEMP_RESOLV_CFG" ]
@@ -99,7 +109,7 @@ set_dns() {
       if mv -f "$TEMP_DIR/$TEMP_RESOLV_CFG" "$RESOLV_CFG" > /dev/null
       then
         echo 'New DNS servers:'
-        cat $RESOLV_CFG
+        echo "$(cat $RESOLV_CFG)"
 
         hup_dnsmasq
         echo 'Done'
@@ -116,17 +126,18 @@ restore_dns() {
   if mv -f "$RESOLV_CFG.bak" "$RESOLV_CFG" > /dev/null
   then
     echo 'Restored DNS servers:'
-    cat $RESOLV_CFG
+    echo "$(cat $RESOLV_CFG)"
     hup_dnsmasq
     echo 'Done'
   fi
 }
 
 get_ovpn_options() {
-  echo 'Starting dummy OpenVPN process to get pushed configuration...'
+  echo 'Getting pushed OpenVPN configuration'
   echo "Using config file: $OPENVPN_CFG"
   echo "Using output file: $TEMP_DIR/$OPTIONS_CFG"
 
+  echo 'Starting dummy OpenVPN process to get pushed configuration...'
   openvpn --config "$OPENVPN_CFG" --dev null --verb 3 \
   | grep -o -E 'PUSH_REPLY,.+?,push-continuation' \
   | awk -F "," '{for (i=2; i<NF; i++) print $i}' \
@@ -134,7 +145,7 @@ get_ovpn_options() {
 
   if [ ! -s "$TEMP_DIR/$OPTIONS_CFG" ]
   then
-   echo 'Failed to get OpenVPN configuration'
+   echo 'Failed to get pushed OpenVPN configuration'
    exit 1
   else
    echo 'Done'
@@ -143,25 +154,54 @@ get_ovpn_options() {
 
 cleanup_temp() {
  echo 'Removing temporary files'
- rm "$TEMP_DIR/$TEMP_RESOLV_CFG"
+ rm "$TEMP_DIR/$TEMP_RESOLV_CFG" "$TEMP_DIR/$OPTIONS_CFG"
  echo 'Done'
 }
+
+#########################################################
+
+echo "Script type: $script_type"
 
 case "$script_type" in
   'up')
     get_ovpn_options
     ;;
-  'down')
-    set_iptables "D"
-    restore_dns
-    cleanup_temp
-    # Not needed, OpenVPN seems to clear routes itself
-    #set_routes "del"
-    ;;
   'route-up')
-    set_iptables "I"
-    set_routes "add"
-    set_dns
+    if [ "$ADD_IPTABLES_RULES" -eq '1' ]
+    then
+      set_iptables 'I'
+    else
+      echo 'Skipping iptables rules delete'
+    fi
+
+    set_routes 'add'
+
+    if [ "$SET_DNS_SERVERS" -eq '1' ]
+    then
+      set_dns
+    else
+      echo 'Skipping DNS servers setup'
+    fi
+    ;;
+  'down')
+    if [ "$ADD_IPTABLES_RULES" -eq '1' ]
+    then
+      set_iptables 'D'
+    else
+      echo 'Skipping iptables rules insert'
+    fi
+
+    if [ "$SET_DNS_SERVERS" -eq '1' ]
+    then
+      restore_dns
+    else
+      echo 'Skipping DNS servers restore'
+    fi
+
+    cleanup_temp
+
+    # Not needed, OpenVPN seems to clear routes itself
+    #set_routes 'del'
     ;;
   *)
     echo "Invalid script type: '$script_type'. Should be one of the following: 'up', 'down', 'route-up'"

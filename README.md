@@ -28,6 +28,8 @@ This solution is tested with Asus WL-500W router. It takes about ~30 minutes to 
 	* set path to your `resolv.conf`: `RESOLV_CFG='/tmp/resolv.conf'`
 	* set path to your TEMP directory: `TEMP_DIR='/tmp'`
 	* configure syslog support: `USE_SYSLOG='1'`
+	* configure [iptables rules](#iptables-rules)</sup>: `ADD_IPTABLES_RULES='1'`
+	* configure [DNS servers](#dns-servers): `SET_DNS_SERVERS='1'`
 4. Edit your OpenVPN config to include this lines:
 
   ```
@@ -41,11 +43,9 @@ This solution is tested with Asus WL-500W router. It takes about ~30 minutes to 
 ```
 
 # Notes
-`detour.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. To disable this, comment this line on `detour.sh`:
 
-```
-  'route-up')
-    #set_iptables "I"
-    set_routes "add"
-    set_dns
-```
+## Iptables rules
+`detour.sh` will also add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to '0', to disables this.
+
+## DNS servers
+Set variable to '0', to ingore pushed DNS servers.
