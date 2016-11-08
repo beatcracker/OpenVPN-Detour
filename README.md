@@ -51,4 +51,4 @@ If set to `1`, the script will additionaly output log to `syslog`. For routers, 
 Useful for routers: add `iptables` rules to allow traffic to pass beween `bridge` and OpenVPN `tunnel` interface. Set variable to `0`, to disable this.
 
 ## DNS servers
-Set variable to `0`, to ingore pushed DNS servers.
+Set variable to `0`, to ignore pushed DNS servers.
