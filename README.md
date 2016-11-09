@@ -7,7 +7,7 @@ Linux ifconfig failed: could not execute external program
 Exiting due to fatal error
 ```
 
-This happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/). It pushes about 25000 routes.
+This happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/): it pushes about 25000 routes.
 
 # Details
 
@@ -19,7 +19,7 @@ When OpenVPN client executes `detour.sh` script, second, dummy OpenVPN connectio
 
 # Usage
 
-This solution is tested with Asus WL-500W router. It takes about ~30 minutes to push all the routes this way.
+This solution is tested with Asus WL-500W router. It takes less then 10 minutes to push all the routes this way.
 
 1. Copy script to your OpenVPN config directory
 2. Make it executable:
