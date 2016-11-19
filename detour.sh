@@ -205,6 +205,6 @@ case "$script_type" in
     ;;
   *)
     echo "Invalid script type: '$script_type'. Should be one of the following: 'up', 'down', 'route-up'"
-    exit
+    exit 1
     ;;
 esac
