@@ -7,7 +7,9 @@ Linux ifconfig failed: could not execute external program
 Exiting due to fatal error
 ```
 
-This happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/): it pushes about 25000 routes.
+~~This happens to the users of the Russian free anti-censorship service [AntiZapret](https://antizapret.prostovpn.org/) which pushes about 25000 routes.~~
+
+Paragraph above no longer applies: AntiZapret is [switched to DNS-based routing](https://twitter.com/ValdikSS/status/790251825186410496) and doesn't push routes by default. You can use old vpn server: `vpn-old.antizapret.prostovpn.org` if you need route-based solution. It still can be useful if your provider blocks sites by IP-address rather than by domain name/URL.
 
 # Details
 
