@@ -171,7 +171,7 @@ case "$script_type" in
     then
       set_iptables 'I'
     else
-      echo 'Skipping iptables rules delete'
+      echo 'Skipping iptables rules insert'
     fi
 
     set_routes 'add'
@@ -188,7 +188,7 @@ case "$script_type" in
     then
       set_iptables 'D'
     else
-      echo 'Skipping iptables rules insert'
+      echo 'Skipping iptables rules delete'
     fi
 
     if [ "$SET_DNS_SERVERS" -eq '1' ]
