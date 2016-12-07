@@ -72,7 +72,7 @@ set_routes() {
   killall ping
 }
 
-hup_dnsmasq() {
+reconfigure_dnsmasq() {
   echo 'Reconfiguring dnsmasq'
   killall -HUP dnsmasq
 }
@@ -111,7 +111,7 @@ set_dns() {
         echo 'New DNS servers:'
         echo "$(cat $RESOLV_CFG)"
 
-        hup_dnsmasq
+        reconfigure_dnsmasq
         echo 'Done'
       fi
     fi
@@ -127,7 +127,7 @@ restore_dns() {
   then
     echo 'Restored DNS servers:'
     echo "$(cat $RESOLV_CFG)"
-    hup_dnsmasq
+    reconfigure_dnsmasq
     echo 'Done'
   fi
 }
