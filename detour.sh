@@ -24,9 +24,9 @@ SET_DNS_SERVERS='1'
 #              DO NOT EDIT BELOW THIS LINE              #
 #########################################################
 
-OPTIONS_CFG='detour.conf'
-TEMP_RESOLV_CFG='resolv.conf.detour'
 OPENVPN_CFG="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/$config"
+OPTIONS_CFG="${config}.detour"
+TEMP_RESOLV_CFG="$(basename $RESOLV_CFG).detour"
 
 if [ "$USE_SYSLOG" -eq '1' ]
 then
@@ -72,7 +72,7 @@ set_routes() {
   killall ping
 }
 
-hup_dnsmasq() {
+reconfigure_dnsmasq() {
   echo 'Reconfiguring dnsmasq'
   killall -HUP dnsmasq
 }
@@ -111,7 +111,7 @@ set_dns() {
         echo 'New DNS servers:'
         echo "$(cat $RESOLV_CFG)"
 
-        hup_dnsmasq
+        reconfigure_dnsmasq
         echo 'Done'
       fi
     fi
@@ -127,7 +127,7 @@ restore_dns() {
   then
     echo 'Restored DNS servers:'
     echo "$(cat $RESOLV_CFG)"
-    hup_dnsmasq
+    reconfigure_dnsmasq
     echo 'Done'
   fi
 }
