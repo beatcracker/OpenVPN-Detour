@@ -161,6 +161,7 @@ cleanup_temp() {
 #########################################################
 
 echo "Script type: $script_type"
+echo "Script context: $script_context"
 
 case "$script_type" in
   'up')
@@ -169,6 +170,11 @@ case "$script_type" in
   'route-up')
     if [ "$ADD_IPTABLES_RULES" -eq '1' ]
     then
+	  if [ $script_context -eq 'restart' ]
+	  then
+	    echo 'Restart detected: restoring iptables'
+	    set_iptables 'D'
+	  fi 
       set_iptables 'I'
     else
       echo 'Skipping iptables rules insert'
@@ -178,6 +184,11 @@ case "$script_type" in
 
     if [ "$SET_DNS_SERVERS" -eq '1' ]
     then
+	  if [ $script_context -eq 'restart' ]
+	  then
+	    echo 'Restart detected: restoring DNS servers'
+	    restore_dns
+	  fi 
       set_dns
     else
       echo 'Skipping DNS servers setup'
