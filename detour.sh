@@ -170,7 +170,7 @@ case "$script_type" in
   'route-up')
     if [ "$ADD_IPTABLES_RULES" -eq '1' ]
     then
-	  if [ $script_context -eq 'restart' ]
+	  if [ "$script_context" -eq 'restart' ]
 	  then
 	    echo 'Restart detected: restoring iptables'
 	    set_iptables 'D'
@@ -184,7 +184,7 @@ case "$script_type" in
 
     if [ "$SET_DNS_SERVERS" -eq '1' ]
     then
-	  if [ $script_context -eq 'restart' ]
+	  if [ "$script_context" -eq 'restart' ]
 	  then
 	    echo 'Restart detected: restoring DNS servers'
 	    restore_dns
