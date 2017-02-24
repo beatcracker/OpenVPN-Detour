@@ -140,8 +140,19 @@ get_ovpn_options() {
 
   echo 'Starting dummy OpenVPN process to get pushed configuration...'
   openvpn --config "$OPENVPN_CFG" --dev null --verb 3 \
-  | grep -o -E 'PUSH_REPLY,.+?,push-continuation' \
-  | awk -F "," '{for (i=2; i<NF; i++) print $i}' \
+  | awk '
+    /PUSH_REPLY/ {
+      gsub("\047", "")
+      n = split($0, a, ",")
+      if (a[n] ~ "push-continuation [[:digit:]]") {
+        c = n - 1
+      } else {
+        c = n
+      }
+      for (i = 2; i <= c; i++) {
+        print a[i]
+      }
+    }' \
   > "$TEMP_DIR/$OPTIONS_CFG"
 
   if [ ! -s "$TEMP_DIR/$OPTIONS_CFG" ]
