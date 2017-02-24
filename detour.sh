@@ -165,7 +165,7 @@ get_ovpn_options() {
 }
 
 cleanup_temp() {
- echo 'Removing temporary files'
+ echo "Removing temporary files: $(ls $TEMP_DIR/*.detour)"
  rm $TEMP_DIR/*.detour
  echo 'Done'
 }
