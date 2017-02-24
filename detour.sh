@@ -103,7 +103,7 @@ set_dns() {
     echo "Backing up dnsmasq config: $RESOLV_CFG -> $RESOLV_CFG.bak"
     if mv -f "$RESOLV_CFG" "$RESOLV_CFG.bak" > /dev/null
     then
-	  echo "Merging new dnsmasq config with original"
+      echo "Merging new dnsmasq config with original"
       grep -v -F 'nameserver' "$RESOLV_CFG" >> "$TEMP_DIR/$TEMP_RESOLV_CFG"
 
       echo "Updating dnsmasq config: $TEMP_DIR/$TEMP_RESOLV_CFG -> $RESOLV_CFG"
