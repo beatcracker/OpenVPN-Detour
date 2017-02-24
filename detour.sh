@@ -166,7 +166,7 @@ get_ovpn_options() {
 
 cleanup_temp() {
  echo 'Removing temporary files'
- rm "$TEMP_DIR/$TEMP_RESOLV_CFG" "$TEMP_DIR/$OPTIONS_CFG"
+ rm $TEMP_DIR/*.detour
  echo 'Done'
 }
 
