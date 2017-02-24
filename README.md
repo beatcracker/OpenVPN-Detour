@@ -32,6 +32,7 @@ This solution is tested with Asus WL-500W router. It takes less then 10 minutes 
 	* configure [syslog support](#syslog-support): `USE_SYSLOG='1'`
 	* configure [iptables rules](#iptables-rules)</sup>: `ADD_IPTABLES_RULES='1'`
 	* configure [DNS servers](#dns-servers): `SET_DNS_SERVERS='1'`
+	* configure [DNS cache](#dns-cache): `CLEAR_DNS_CACHE='1'`
 4. Edit your OpenVPN config to include this lines:
 
   ```
@@ -54,3 +55,6 @@ Useful for routers: add `iptables` rules to allow traffic to pass beween `bridge
 
 ## DNS servers
 Set variable to `0`, to ignore pushed DNS servers.
+
+## DNS cache
+Set variable to `1` to restart dnsmasq. Otherwise, script will send `HUP` signal, which reloads config file, but doesn't clear DNS cache.

@@ -20,6 +20,10 @@ ADD_IPTABLES_RULES='1'
 # Apply pushed DNS servers?
 SET_DNS_SERVERS='1'
 
+# Clear DNS cache?
+# Restart dnsmasq, instead of reloading config file
+CLEAR_DNS_CACHE='1'
+
 #########################################################
 #              DO NOT EDIT BELOW THIS LINE              #
 #########################################################
@@ -73,8 +77,14 @@ set_routes() {
 }
 
 reconfigure_dnsmasq() {
-  echo 'Reconfiguring dnsmasq'
-  killall -HUP dnsmasq
+  if [ "$CLEAR_DNS_CACHE" -eq '1' ]
+  then
+    echo 'Restarting dnsmasq'
+    killall dnsmasq && dnsmasq
+  else
+    echo 'Reconfiguring dnsmasq'
+    killall -HUP dnsmasq
+  fi
 }
 
 set_dns() {
