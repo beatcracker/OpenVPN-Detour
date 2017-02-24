@@ -66,9 +66,14 @@ set_routes() {
   echo 'Starting background ping of VPN gateway...'
   ping -q $route_vpn_gateway &
 
-  echo "Adding routes, this could take a while..."
+  echo 'Adding routes, this could take a while...'
     awk -v CMD="$1" -v GW="$route_vpn_gateway" \
-    '/^route / {if($3==""){$3="255.255.255.255"};printf("%s %s -net %s netmask %s gw %s\n",$1,CMD,$2,$3,GW)}' \
+    '/^route / {
+	  if ($3 == "") {
+	    $3 = "255.255.255.255"
+	  }
+	  printf("%s %s -net %s netmask %s gw %s\n", $1, CMD, $2, $3, GW)
+	}' \
     "$TEMP_DIR/$OPTIONS_CFG" \
     | sh
 
