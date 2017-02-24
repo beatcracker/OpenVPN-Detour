@@ -82,8 +82,6 @@ set_dns() {
   echo 'Current DNS servers:'
   echo "$(cat $RESOLV_CFG)"
 
-  grep -v -F 'nameserver' "$RESOLV_CFG" > "$TEMP_DIR/$TEMP_RESOLV_CFG"
-
   if [ -z "$foreign_option_1" ]
   then
     echo "Getting new DNS servers from: $TEMP_DIR/$OPTIONS_CFG"
@@ -102,10 +100,13 @@ set_dns() {
 
   if [ -s "$TEMP_DIR/$TEMP_RESOLV_CFG" ]
   then
-    echo "Backing up resolv.conf: $RESOLV_CFG -> $RESOLV_CFG.bak"
+    echo "Backing up dnsmasq config: $RESOLV_CFG -> $RESOLV_CFG.bak"
     if mv -f "$RESOLV_CFG" "$RESOLV_CFG.bak" > /dev/null
     then
-      echo "Updating resolv.conf: $TEMP_DIR/$TEMP_RESOLV_CFG -> $RESOLV_CFG"
+	  echo "Merging new dnsmasq config with original"
+      grep -v -F 'nameserver' "$RESOLV_CFG" >> "$TEMP_DIR/$TEMP_RESOLV_CFG"
+
+      echo "Updating dnsmasq config: $TEMP_DIR/$TEMP_RESOLV_CFG -> $RESOLV_CFG"
       if mv -f "$TEMP_DIR/$TEMP_RESOLV_CFG" "$RESOLV_CFG" > /dev/null
       then
         echo 'New DNS servers:'
